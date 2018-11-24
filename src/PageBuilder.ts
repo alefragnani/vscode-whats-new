@@ -37,7 +37,7 @@ export class WhatsNewPageBuilder {
     }
 
     updateExtensionVersion(extensionVersion: string) {
-        this.htmlFile = this.htmlFile.replace("${extensionVersion}", extensionVersion);
+        this.htmlFile = this.htmlFile.replace("${extensionVersion}", extensionVersion.slice(0, extensionVersion.indexOf(".")));
         return this;
     }
 
