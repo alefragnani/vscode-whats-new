@@ -44,11 +44,11 @@ export class WhatsNewManager {
             `What's New in ${this.extension.packageJSON.displayName}`, vscode.ViewColumn.One, { enableScripts: true });
 
         // Get path to resource on disk
-        const onDiskPath = vscode.Uri.file(path.join(this.context.extensionPath, 'ui', 'whats-new.html'));
+        const onDiskPath = vscode.Uri.file(path.join(this.context.extensionPath, 'vscode-whats-new', 'ui', 'whats-new.html'));
         const pageUri = onDiskPath.with({ scheme: 'vscode-resource' });
 
         // Local path to main script run in the webview
-        const cssPathOnDisk = vscode.Uri.file(path.join(this.context.extensionPath, 'ui', 'main.css'));
+        const cssPathOnDisk = vscode.Uri.file(path.join(this.context.extensionPath, 'vscode-whats-new', 'ui', 'main.css'));
         const cssUri = cssPathOnDisk.with({ scheme: 'vscode-resource' });        
 
         // Local path to main script run in the webview
