@@ -1,7 +1,7 @@
-import * as vscode from "vscode";
 import path = require("path");
-import { WhatsNewPageBuilder } from "./PageBuilder";
+import * as vscode from "vscode";
 import { ContentProvider } from "./ContentProvider";
+import { WhatsNewPageBuilder } from "./PageBuilder";
 
 export class WhatsNewManager {
 
@@ -17,7 +17,7 @@ export class WhatsNewManager {
         this.context = context;
     }
     
-    registerContentProvider(extensionName: string, contentProvider: ContentProvider): WhatsNewManager {
+    public registerContentProvider(extensionName: string, contentProvider: ContentProvider): WhatsNewManager {
         this.extensionName = extensionName
         // this.extensionName = extensionName.toLowerCase();
         this.contentProvider = contentProvider;
@@ -25,7 +25,7 @@ export class WhatsNewManager {
         return this;
     }
 
-    showPageInActivation() {
+    public showPageInActivation() {
         // load data from extension manifest
         this.extension = vscode.extensions.getExtension(`alefragnani.${this.extensionName}`)!;
         // this.extensionVersion = this.extension.packageJSON.version;
@@ -33,32 +33,36 @@ export class WhatsNewManager {
 
         const previousExtensionVersion = this.context.globalState.get<string>(`${this.extensionName}.version`);
 
-        console.log(`${this.extensionName} (${this. extension.packageJSON.displayName}) - Version: ${this.extension.packageJSON.version}`);
+        // console.log(`${this.extensionName} (${this. extension.packageJSON.displayName}) - 
+        //     Version: ${this.extension.packageJSON.version}`);
         this.showPageIfVersionDiffers(this.extension.packageJSON.version, previousExtensionVersion);
     }
 
-    showPage() {
+    public showPage() {
 
         // Create and show panel
         const panel = vscode.window.createWebviewPanel(`${this.extensionName}.whatsNew`, 
             `What's New in ${this.extension.packageJSON.displayName}`, vscode.ViewColumn.One, { enableScripts: true });
 
         // Get path to resource on disk
-        const onDiskPath = vscode.Uri.file(path.join(this.context.extensionPath, 'vscode-whats-new', 'ui', 'whats-new.html'));
-        const pageUri = onDiskPath.with({ scheme: 'vscode-resource' });
+        const onDiskPath = vscode.Uri.file(
+            path.join(this.context.extensionPath, "vscode-whats-new", "ui", "whats-new.html"));
+        const pageUri = onDiskPath.with({ scheme: "vscode-resource" });
 
         // Local path to main script run in the webview
-        const cssPathOnDisk = vscode.Uri.file(path.join(this.context.extensionPath, 'vscode-whats-new', 'ui', 'main.css'));
-        const cssUri = cssPathOnDisk.with({ scheme: 'vscode-resource' });        
+        const cssPathOnDisk = vscode.Uri.file(
+            path.join(this.context.extensionPath, "vscode-whats-new", "ui", "main.css"));
+        const cssUri = cssPathOnDisk.with({ scheme: "vscode-resource" });        
 
         // Local path to main script run in the webview
-        const logoPathOnDisk = vscode.Uri.file(path.join(this.context.extensionPath, 'images', `vscode-${this.extensionName}-logo-readme.png`));
-        const logoUri = logoPathOnDisk.with({ scheme: 'vscode-resource' });  
+        const logoPathOnDisk = vscode.Uri.file(
+            path.join(this.context.extensionPath, "images", `vscode-${this.extensionName}-logo-readme.png`));
+        const logoUri = logoPathOnDisk.with({ scheme: "vscode-resource" });  
         
         panel.webview.html = this.getWebviewContentLocal(pageUri.fsPath, cssUri.toString(), logoUri.toString());
     }
 
-    showPageIfVersionDiffers(currentVersion: string, previousVersion: string) {
+    public showPageIfVersionDiffers(currentVersion: string, previousVersion: string) {
         if ((previousVersion === currentVersion)) {
             return;
         }
@@ -70,12 +74,13 @@ export class WhatsNewManager {
         this.showPage();
     }
 
-    getWebviewContentLocal(htmlFile: string, cssUrl: string, logoUrl: string): string {
+    private getWebviewContentLocal(htmlFile: string, cssUrl: string, logoUrl: string): string {
         return WhatsNewPageBuilder.newBuilder(htmlFile)
             .updateExtensionDisplayName(this.extension.packageJSON.displayName)
             .updateExtensionName(this.extensionName)
             .updateExtensionVersion(this.extension.packageJSON.version)
-            .updateRepositoryUrl(this.extension.packageJSON.repository.url.slice(0, this.extension.packageJSON.repository.url.length - 4))
+            .updateRepositoryUrl(this.extension.packageJSON.repository.url.slice(
+                0, this.extension.packageJSON.repository.url.length - 4))
             .updateRepositoryIssues(this.extension.packageJSON.bugs.url)
             .updateRepositoryHomepage(this.extension.packageJSON.homepage)
             .updateCSS(cssUrl)
