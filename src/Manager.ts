@@ -27,7 +27,7 @@ export class WhatsNewManager {
 
     public showPageInActivation() {
         // load data from extension manifest
-        this.extension = vscode.extensions.getExtension(`alefragnani.${this.extensionName}`)!;
+        this.extension = vscode.extensions.getExtension(`alefragnani.${this.extensionName}`);
         // this.extensionVersion = this.extension.packageJSON.version;
         // this.extensionDisplayName = this.extension.packageJSON.displayName;
 
