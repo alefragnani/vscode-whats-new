@@ -56,7 +56,7 @@ export class WhatsNewManager {
 
         // Local path to main script run in the webview
         const logoPathOnDisk = vscode.Uri.file(
-            path.join(this.context.extensionPath, "images", `vscode-${this.extensionName}-logo-readme.png`));
+            path.join(this.context.extensionPath, "images", `vscode-${this.extensionName.toLowerCase()}-logo-readme.png`));
         const logoUri = logoPathOnDisk.with({ scheme: "vscode-resource" });  
         
         panel.webview.html = this.getWebviewContentLocal(pageUri.fsPath, cssUri.toString(), logoUri.toString());
