@@ -73,7 +73,12 @@ export class WhatsNewPageBuilder {
     }
 
     public updateSponsors(sponsors: Sponsor[]): WhatsNewPageBuilder {
-        let sponsorsString: string = "";
+        if (sponsors.length === 0) {
+            return;
+        }
+
+        let sponsorsString: string = `<p>
+          <h2>Sponsors</h2>`;
 
         for (const sp of sponsors) {
             sponsorsString = sponsorsString.concat(
@@ -84,6 +89,7 @@ export class WhatsNewPageBuilder {
                 ${sp.extra}`
             )           
         }
+        sponsorsString = sponsorsString.concat("</p>");
         this.htmlFile = this.htmlFile.replace("${sponsors}", sponsorsString);
         return this;
     }
