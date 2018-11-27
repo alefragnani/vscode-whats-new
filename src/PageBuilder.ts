@@ -74,7 +74,8 @@ export class WhatsNewPageBuilder {
 
     public updateSponsors(sponsors: Sponsor[]): WhatsNewPageBuilder {
         if (sponsors.length === 0) {
-            return;
+            this.htmlFile = this.htmlFile.replace("${sponsors}", "");
+            return this;
         }
 
         let sponsorsString: string = `<p>
