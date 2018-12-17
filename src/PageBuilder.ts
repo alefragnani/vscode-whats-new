@@ -1,4 +1,8 @@
-import { Uri } from "vscode";
+/*---------------------------------------------------------------------------------------------
+*  Copyright (c) Alessandro Fragnani. All rights reserved.
+*  Licensed under the MIT License. See License.md in the project root for license information.
+*--------------------------------------------------------------------------------------------*/
+
 import * as fs from "fs";
 import { ChangeLogItem, ChangeLogKind, Sponsor, Header } from "./ContentProvider";
 
