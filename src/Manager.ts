@@ -68,19 +68,30 @@ export class WhatsNewManager {
         panel.webview.html = this.getWebviewContentLocal(pageUri.fsPath, cssUri.toString(), logoUri.toString());
     }
 
+    public showPatchPage() {
+        vscode.window.showInformationMessage(`${this.extension.packageJSON.displayName} extension has been updated`, 
+            `Show fixes in v${this.extension.packageJSON.version}`).then(option => {
+            if (option) {
+                this.showPage();
+            }
+        });;
+    }
+
     public showPageIfVersionDiffers(currentVersion: string, previousVersion: string) {
 
         const differs: semver.ReleaseType | null = semver.diff(currentVersion, previousVersion);
 
-        if (!differs || differs === "patch") {
+        if (!differs) {
             return;
         }
 
+        this.context.globalState.update(`${this.extensionName}.version`, currentVersion);
+        
         if (differs === "major" || differs === "minor") {
-            this.context.globalState.update(`${this.extensionName}.version`, currentVersion);
+            this.showPage();
+        } else { // patch
+            this.showPatchPage();
         }
-
-        this.showPage();
     }
 
     private getWebviewContentLocal(htmlFile: string, cssUrl: string, logoUrl: string): string {
