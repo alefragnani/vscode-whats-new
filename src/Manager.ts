@@ -70,11 +70,13 @@ export class WhatsNewManager {
 
     public showPageIfVersionDiffers(currentVersion: string, previousVersion: string) {
 
-        const differs: semver.ReleaseType | null = semver.diff(currentVersion, previousVersion);
-
-        // only "patch" should be suppressed
-        if (!differs || differs === "patch") {
-            return;
+        if (previousVersion) {
+            const differs: semver.ReleaseType | null = semver.diff(currentVersion, previousVersion);
+            
+            // only "patch" should be suppressed
+            if (!differs || differs === "patch") {
+                return;
+            }
         }
 
         // "major", "minor"
