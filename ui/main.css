@@ -3,14 +3,14 @@ html {
 
 body {
   background-color: var(--vscode-editor-background);
-  color: var(--color);
-  font-family: var(--font-family);
+  color: var(--vscode-editor-foreground);
+  font-family: var(--vscode-editor-font-family);
   height: 100%;
   line-height: 1.4; }
 
 a {
   border: 0;
-  color: var(--link-color);
+  color: var(--vscode-textLink-foreground);
   font-weight: 400;
   outline: none;
   text-decoration: none; }
@@ -55,7 +55,7 @@ header {
   margin-bottom: 1em; }
 
 input, select, button {
-  font-family: var(--font-family);
+  font-family: var(--vscode-editor-font-family);
   font-size: inherit;
   margin: 0; }
 
