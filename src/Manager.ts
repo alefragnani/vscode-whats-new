@@ -12,8 +12,6 @@ import { WhatsNewPageBuilder } from "./PageBuilder";
 export class WhatsNewManager {
 
     private extensionName: string;
-    // private extensionDisplayName: string;
-    // private extensionVersion: string;
     private context: vscode.ExtensionContext;
     private contentProvider: ContentProvider;
 
@@ -25,7 +23,6 @@ export class WhatsNewManager {
     
     public registerContentProvider(extensionName: string, contentProvider: ContentProvider): WhatsNewManager {
         this.extensionName = extensionName
-        // this.extensionName = extensionName.toLowerCase();
         this.contentProvider = contentProvider;
 
         return this;
@@ -34,13 +31,9 @@ export class WhatsNewManager {
     public showPageInActivation() {
         // load data from extension manifest
         this.extension = vscode.extensions.getExtension(`alefragnani.${this.extensionName}`);
-        // this.extensionVersion = this.extension.packageJSON.version;
-        // this.extensionDisplayName = this.extension.packageJSON.displayName;
 
         const previousExtensionVersion = this.context.globalState.get<string>(`${this.extensionName}.version`);
 
-        // console.log(`${this.extensionName} (${this. extension.packageJSON.displayName}) - 
-        //     Version: ${this.extension.packageJSON.version}`);
         this.showPageIfVersionDiffers(this.extension.packageJSON.version, previousExtensionVersion);
     }
 
