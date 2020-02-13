@@ -6,6 +6,7 @@ body {
   color: var(--vscode-editor-foreground);
   font-family: var(--vscode-font-family);
   height: 100%;
+  opacity: 0.85;
   line-height: 1.4; }
 
 a {
