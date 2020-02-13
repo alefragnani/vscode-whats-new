@@ -4,7 +4,7 @@ html {
 body {
   background-color: var(--vscode-editor-background);
   color: var(--vscode-editor-foreground);
-  font-family: var(--vscode-editor-font-family);
+  font-family: var(--vscode-font-family);
   height: 100%;
   line-height: 1.4; }
 
@@ -55,7 +55,7 @@ header {
   margin-bottom: 1em; }
 
 input, select, button {
-  font-family: var(--vscode-editor-font-family);
+  font-family: var(--vscode-font-family);
   font-size: inherit;
   margin: 0; }
 
