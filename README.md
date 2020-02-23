@@ -1,6 +1,6 @@
 # What's New
 
-This module is a template based engine to display **What's New** pages on VS Code extensions. **What's New** pages are informative pages/windows displayed when _new versions_ of an extension are installed. Just like the **Release Notes** displayed with VS Code updates.
+This module is a template based engine, used to display a **What's New** page on VS Code extensions. It has a simple, but yet effective UI, optimized to display all the information in a single page.
 
 ![whats-new-bookmarks](images/whats-new-bookmarks.png)
 
@@ -44,11 +44,11 @@ context.subscriptions.push(vscode.commands.registerCommand("projectManager.whats
 
 ### Detects version updates
 
-The module recognizes [Semantic Versioning](https://www.semver.org), detecting **Major**, **Minor** and **Patches**. The **What's New** page will only be displayed when a **Major** or **Minor** update occurs. **Patches** are ignored.
+The module follows [SEMVER - Semantic Versioning](https://www.semver.org), detecting **Major**, **Minor** and **Patch** versions. The **What's New** page will only be displayed when a **Major** or **Minor** update occurs. **Patches** are silent.
 
 ### Template Based
 
-The **What's New** page follows a simple but yet effective visual identity. This identity was optimized to use a single page to display all relevant information, with no need to extra scrolling. 
+There is not need to deal with HTML or CSS for updating the page's content. Simply _provides_ the relevant information and the HTML page is automatically generated.
 
 ### Dark and Light Themes support
 
@@ -56,7 +56,7 @@ Ready for both Dark and Light themes
 
 ## Inspiration
 
-The idea to this module came from the [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens) welcome page. (big thanks to Eric Amodio :claps:). Around that html/css, I created a template based engine to be used by any extension, with an very simple API.
+The idea to this module came from the [GitLens extension](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens) (big thanks to Eric Amodio :claps:). Based on pieces of its welcome page, this template based engine was created, and now can be used by any extension.
 
 # License
 
