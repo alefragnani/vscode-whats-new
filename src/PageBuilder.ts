@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import * as fs from "fs";
-import { ChangeLogItem, ChangeLogKind, Header, Sponsor } from "./ContentProvider";
+import { ChangeLogItem, ChangeLogIssue, ChangeLogVersion, ChangeLogKind, Header, Sponsor } from "./ContentProvider";
 
 export class WhatsNewPageBuilder {
 
@@ -66,12 +66,23 @@ export class WhatsNewPageBuilder {
         let changeLogString: string = "";
 
         for (const cl of changeLog) {
-            const badge: string = this.getBadgeFromChangeLogKind(cl.kind);
-            changeLogString = changeLogString.concat(
-                `<li><span class="changelog__badge changelog__badge--${badge}">${cl.kind}</span>
-                    ${cl.message}
-                </li>`
-            )           
+            if (cl.kind === ChangeLogKind.VERSION) {
+                const cc: ChangeLogVersion = <ChangeLogVersion>cl.detail;
+                const borderTop = changeLogString === "" ? "" : "changelog__version__borders__top";
+                changeLogString = changeLogString.concat(
+                    `<li class="changelog__version__borders ${borderTop} changelog__version__borders__bottom">
+                        <span class="changelog__badge changelog__badge--version">${cc.releaseNumber}</span>
+                        <span class="uppercase bold">${cc.releaseDate}</span>
+                    </li>`);
+            } else {
+                const badge: string = this.getBadgeFromChangeLogKind(cl.kind);
+                const cc: ChangeLogIssue = <ChangeLogIssue>cl.detail;
+                changeLogString = changeLogString.concat(
+                    `<li><span class="changelog__badge changelog__badge--${badge}">${cl.kind}</span>
+                        ${cc.message}
+                    </li>`
+                );
+            }
         }
         this.htmlFile = this.htmlFile.replace("${changeLog}", changeLogString);
         return this;

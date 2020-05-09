@@ -17,11 +17,20 @@ export interface Header {
 }
 
 // changelog
-export enum ChangeLogKind { NEW = "NEW", CHANGED = "CHANGED", FIXED = "FIXED" };
+export enum ChangeLogKind { NEW = "NEW", CHANGED = "CHANGED", FIXED = "FIXED", VERSION = "VERSION" };
+
+export interface ChangeLogIssue {
+    message: string;
+}
+
+export interface ChangeLogVersion {
+    releaseNumber: string;
+    releaseDate: string;
+}
 
 export interface ChangeLogItem {
     kind: ChangeLogKind;
-    message: string;
+    detail: ChangeLogIssue | ChangeLogVersion;
 }
 
 // sponsor
