@@ -83,13 +83,11 @@ export class WhatsNewPageBuilder {
                 if (cc.kind === IssueKind.Issue) {
                     message = `${cc.message}
                         (<a title=\"Open Issue #${cc.id}\" 
-                        href=\"${this.repositoryUrl}/issues/${cc.id}\">
-                        Issue #${cc.id}</a>)`
+                        href=\"${this.repositoryUrl}/issues/${cc.id}\">Issue #${cc.id}</a>)`
                 } else {
                     message = `${cc.message}
                         (Thanks to ${cc.kudos} - <a title=\"Open PR #${cc.id}\" 
-                        href=\"${this.repositoryUrl}/pull/${cc.id}\">
-                        PR #${cc.id}</a>)`
+                        href=\"${this.repositoryUrl}/pull/${cc.id}\">PR #${cc.id}</a>)`
                 }
                 changeLogString = changeLogString.concat(
                     `<li><span class="changelog__badge changelog__badge--${badge}">${cl.kind}</span>
@@ -139,6 +137,9 @@ export class WhatsNewPageBuilder {
             
             case ChangeLogKind.FIXED:
                 return "fixed";
+        
+            case ChangeLogKind.INTERNAL:
+                return "internal";
         
             default:
                 break;

@@ -21,7 +21,8 @@ export enum ChangeLogKind {
     NEW = "NEW", 
     CHANGED = "CHANGED", 
     FIXED = "FIXED", 
-    VERSION = "VERSION"
+    VERSION = "VERSION",
+    INTERNAL = "INTERNAL"
 };
 
 export enum IssueKind { 

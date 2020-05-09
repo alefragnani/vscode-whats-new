@@ -206,6 +206,9 @@ ul {
 .changelog__badge--fixed {
   background-color: var(--vscode-gitDecoration-conflictingResourceForeground); }
 
+.changelog__badge--internal {
+  background-color: var(--vscode-gitDecoration-modifiedResourceForeground); }
+
 .changelog__badge--version {
   background-color: var(--vscode-activityBarBadge-background); 
   height: 24px;
