@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import * as fs from "fs";
-import { ChangeLogItem, ChangeLogKind, Header, Sponsor } from "./ContentProvider";
+import { ChangeLogItem, ChangeLogIssue, ChangeLogVersion, ChangeLogKind, Header, Sponsor, IssueKind } from "./ContentProvider";
 
 export class WhatsNewPageBuilder {
 
@@ -13,6 +13,7 @@ export class WhatsNewPageBuilder {
     }
 
     private htmlFile: string;
+    private repositoryUrl: string;
 
     constructor(htmlFile: string) {
         this.htmlFile = fs.readFileSync(htmlFile).toString();
@@ -36,6 +37,7 @@ export class WhatsNewPageBuilder {
 
     public updateRepositoryUrl(repositoryUrl: string) {
         this.htmlFile = this.htmlFile.replace(/\$\{repositoryUrl\}/g, repositoryUrl);
+        this.repositoryUrl = repositoryUrl;
         return this;
     }
 
@@ -66,12 +68,33 @@ export class WhatsNewPageBuilder {
         let changeLogString: string = "";
 
         for (const cl of changeLog) {
-            const badge: string = this.getBadgeFromChangeLogKind(cl.kind);
-            changeLogString = changeLogString.concat(
-                `<li><span class="changelog__badge changelog__badge--${badge}">${cl.kind}</span>
-                    ${cl.message}
-                </li>`
-            )           
+            if (cl.kind === ChangeLogKind.VERSION) {
+                const cc: ChangeLogVersion = <ChangeLogVersion>cl.detail;
+                const borderTop = changeLogString === "" ? "" : "changelog__version__borders__top";
+                changeLogString = changeLogString.concat(
+                    `<li class="changelog__version__borders ${borderTop}">
+                        <span class="changelog__badge changelog__badge--version">${cc.releaseNumber}</span>
+                        <span class="uppercase bold">${cc.releaseDate}</span>
+                    </li>`);
+            } else {
+                const badge: string = this.getBadgeFromChangeLogKind(cl.kind);
+                const cc: ChangeLogIssue = <ChangeLogIssue>cl.detail;
+                let message: string;
+                if (cc.kind === IssueKind.Issue) {
+                    message = `${cc.message}
+                        (<a title=\"Open Issue #${cc.id}\" 
+                        href=\"${this.repositoryUrl}/issues/${cc.id}\">Issue #${cc.id}</a>)`
+                } else {
+                    message = `${cc.message}
+                        (Thanks to ${cc.kudos} - <a title=\"Open PR #${cc.id}\" 
+                        href=\"${this.repositoryUrl}/pull/${cc.id}\">PR #${cc.id}</a>)`
+                }
+                changeLogString = changeLogString.concat(
+                    `<li><span class="changelog__badge changelog__badge--${badge}">${cl.kind}</span>
+                        ${message}
+                    </li>`
+                );
+            }
         }
         this.htmlFile = this.htmlFile.replace("${changeLog}", changeLogString);
         return this;
@@ -114,6 +137,9 @@ export class WhatsNewPageBuilder {
             
             case ChangeLogKind.FIXED:
                 return "fixed";
+        
+            case ChangeLogKind.INTERNAL:
+                return "internal";
         
             default:
                 break;
