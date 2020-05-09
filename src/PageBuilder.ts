@@ -72,7 +72,7 @@ export class WhatsNewPageBuilder {
                 const cc: ChangeLogVersion = <ChangeLogVersion>cl.detail;
                 const borderTop = changeLogString === "" ? "" : "changelog__version__borders__top";
                 changeLogString = changeLogString.concat(
-                    `<li class="changelog__version__borders ${borderTop} changelog__version__borders__bottom">
+                    `<li class="changelog__version__borders ${borderTop}">
                         <span class="changelog__badge changelog__badge--version">${cc.releaseNumber}</span>
                         <span class="uppercase bold">${cc.releaseDate}</span>
                     </li>`);
