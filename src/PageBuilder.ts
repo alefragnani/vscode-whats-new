@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import * as fs from "fs";
-import { ChangeLogItem, ChangeLogIssue, ChangeLogVersion, ChangeLogKind, Header, Sponsor } from "./ContentProvider";
+import { ChangeLogItem, ChangeLogIssue, ChangeLogVersion, ChangeLogKind, Header, Sponsor, IssueKind } from "./ContentProvider";
 
 export class WhatsNewPageBuilder {
 
@@ -13,6 +13,7 @@ export class WhatsNewPageBuilder {
     }
 
     private htmlFile: string;
+    private repositoryUrl: string;
 
     constructor(htmlFile: string) {
         this.htmlFile = fs.readFileSync(htmlFile).toString();
@@ -36,6 +37,7 @@ export class WhatsNewPageBuilder {
 
     public updateRepositoryUrl(repositoryUrl: string) {
         this.htmlFile = this.htmlFile.replace(/\$\{repositoryUrl\}/g, repositoryUrl);
+        this.repositoryUrl = repositoryUrl;
         return this;
     }
 
@@ -77,9 +79,21 @@ export class WhatsNewPageBuilder {
             } else {
                 const badge: string = this.getBadgeFromChangeLogKind(cl.kind);
                 const cc: ChangeLogIssue = <ChangeLogIssue>cl.detail;
+                let message: string;
+                if (cc.kind === IssueKind.Issue) {
+                    message = `${cc.message}
+                        (<a title=\"Open Issue #${cc.id}\" 
+                        href=\"${this.repositoryUrl}/issues/${cc.id}\">
+                        Issue #${cc.id}</a>)`
+                } else {
+                    message = `${cc.message}
+                        (Thanks to ${cc.kudos} - <a title=\"Open PR #${cc.id}\" 
+                        href=\"${this.repositoryUrl}/pull/${cc.id}\">
+                        PR #${cc.id}</a>)`
+                }
                 changeLogString = changeLogString.concat(
                     `<li><span class="changelog__badge changelog__badge--${badge}">${cl.kind}</span>
-                        ${cc.message}
+                        ${message}
                     </li>`
                 );
             }
