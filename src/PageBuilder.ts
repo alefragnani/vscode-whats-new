@@ -66,7 +66,7 @@ export class WhatsNewPageBuilder {
     }
 
     public updateChangeLog(changeLog: ChangeLogItem[]): WhatsNewPageBuilder {
-        let changeLogString: string = "";
+        let changeLogString = "";
 
         for (const cl of changeLog) {
             if (cl.kind === ChangeLogKind.VERSION) {
@@ -83,12 +83,12 @@ export class WhatsNewPageBuilder {
                 let message: string;
                 if (cc.kind === IssueKind.Issue) {
                     message = `${cc.message}
-                        (<a title=\"Open Issue #${cc.id}\" 
-                        href=\"${this.repositoryUrl}/issues/${cc.id}\">Issue #${cc.id}</a>)`
+                        (<a title="Open Issue #${cc.id}" 
+                        href="${this.repositoryUrl}/issues/${cc.id}">Issue #${cc.id}</a>)`
                 } else {
                     message = `${cc.message}
-                        (Thanks to ${cc.kudos} - <a title=\"Open PR #${cc.id}\" 
-                        href=\"${this.repositoryUrl}/pull/${cc.id}\">PR #${cc.id}</a>)`
+                        (Thanks to ${cc.kudos} - <a title="Open PR #${cc.id}" 
+                        href="${this.repositoryUrl}/pull/${cc.id}">PR #${cc.id}</a>)`
                 }
                 changeLogString = changeLogString.concat(
                     `<li><span class="changelog__badge changelog__badge--${badge}">${cl.kind}</span>
@@ -107,7 +107,7 @@ export class WhatsNewPageBuilder {
             return this;
         }
 
-        let sponsorsString: string = `<p>
+        let sponsorsString = `<p>
           <h2>Sponsors</h2>`;
 
         for (const sp of sponsors) {
