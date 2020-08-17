@@ -81,6 +81,7 @@ export class WhatsNewManager {
 
     private getWebviewContentLocal(htmlFile: string, cssUrl: string, logoUrl: string): string {
         return WhatsNewPageBuilder.newBuilder(htmlFile)
+            .updateExtensionPublisher(this.publisher)
             .updateExtensionDisplayName(this.extension.packageJSON.displayName)
             .updateExtensionName(this.extensionName)
             .updateExtensionVersion(this.extension.packageJSON.version)

@@ -20,6 +20,11 @@ export class WhatsNewPageBuilder {
         this.htmlFile = fs.readFileSync(htmlFile).toString();
     }
 
+    public updateExtensionPublisher(publisher: string) {
+        this.htmlFile = this.htmlFile.replace(/\$\{publisher\}/g, publisher);
+        return this;
+    }
+
     public updateExtensionDisplayName(extensionDisplayName: string) {
         this.htmlFile = this.htmlFile.replace(/\$\{extensionDisplayName\}/g, extensionDisplayName);
         return this;
