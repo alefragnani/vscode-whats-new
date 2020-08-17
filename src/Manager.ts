@@ -11,6 +11,7 @@ import { WhatsNewPageBuilder } from "./PageBuilder";
 
 export class WhatsNewManager {
 
+    private publisher: string;
     private extensionName: string;
     private context: vscode.ExtensionContext;
     private contentProvider: ContentProvider;
@@ -21,7 +22,8 @@ export class WhatsNewManager {
         this.context = context;
     }
     
-    public registerContentProvider(extensionName: string, contentProvider: ContentProvider): WhatsNewManager {
+    public registerContentProvider(publisher: string, extensionName: string, contentProvider: ContentProvider): WhatsNewManager {
+        this.publisher = publisher;
         this.extensionName = extensionName
         this.contentProvider = contentProvider;
 
@@ -30,7 +32,7 @@ export class WhatsNewManager {
 
     public showPageInActivation() {
         // load data from extension manifest
-        this.extension = vscode.extensions.getExtension(`alefragnani.${this.extensionName}`);
+        this.extension = vscode.extensions.getExtension(`${this.publisher}.${this.extensionName}`);
 
         const previousExtensionVersion = this.context.globalState.get<string>(`${this.extensionName}.version`);
 
