@@ -5,7 +5,7 @@
 
 import * as fs from "fs";
 import * as semver from "semver";
-import { ChangeLogItem, ChangeLogIssue, ChangeLogVersion, ChangeLogKind, Header, Sponsor, IssueKind } from "./ContentProvider";
+import { ChangeLogItem, ChangeLogIssue, ChangeLogVersion, ChangeLogKind, Header, Sponsor, IssueKind, SupportChannel } from "./ContentProvider";
 
 export class WhatsNewPageBuilder {
 
@@ -121,6 +121,26 @@ export class WhatsNewPageBuilder {
         }
         sponsorsString = sponsorsString.concat("</p>");
         this.htmlFile = this.htmlFile.replace("${sponsors}", sponsorsString);
+        return this;
+    }
+
+    public updateSupportButtons(supportButtons: SupportChannel[]): WhatsNewPageBuilder {
+        if (supportButtons.length === 0) {
+            this.htmlFile = this.htmlFile.replace("${supportButtons}", "");
+            return this;
+        }
+
+        let supportButtonsString = `<div class="button-group button-group--support-alefragnani">`;
+
+        for (const sc of supportButtons) {
+            supportButtonsString = supportButtonsString.concat(
+                `<a class="button button--flat-primary" title="${sc.title}" href="${sc.link}" target="_blank">
+                    ${sc.message} 
+                </a>`
+            )           
+        }
+        supportButtonsString = supportButtonsString.concat("</div>");
+        this.htmlFile = this.htmlFile.replace("${supportButtons}", supportButtonsString);
         return this;
     }
 

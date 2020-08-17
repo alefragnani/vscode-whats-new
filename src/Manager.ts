@@ -92,6 +92,7 @@ export class WhatsNewManager {
             .updateHeader(this.contentProvider.provideHeader(logoUrl))
             .updateChangeLog(this.contentProvider.provideChangeLog())
             .updateSponsors(this.contentProvider.provideSponsors())
+            .updateSupportButtons(this.contentProvider.provideSupportButtons())
             .build();
     }
  }

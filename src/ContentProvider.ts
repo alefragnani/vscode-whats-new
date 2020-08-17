@@ -57,8 +57,15 @@ export interface Sponsor {
     extra: string;
 }
 
+export interface SupportChannel {
+    title: string;
+    link: string;
+    message: string;
+}
+
 export interface ContentProvider {
     provideHeader(logoUrl: string): Header;
     provideChangeLog(): ChangeLogItem[];
     provideSponsors(): Sponsor[];
+    provideSupportButtons(): SupportChannel[];
 }
