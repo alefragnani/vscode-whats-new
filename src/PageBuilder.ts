@@ -5,7 +5,7 @@
 
 import * as fs from "fs";
 import * as semver from "semver";
-import { ChangeLogItem, ChangeLogIssue, ChangeLogVersion, ChangeLogKind, Header, Sponsor, IssueKind, SupportChannel } from "./ContentProvider";
+import { ChangeLogItem, ChangeLogIssue, ChangeLogVersion, ChangeLogKind, Header, Sponsor, IssueKind, SupportChannel, SocialMedia } from "./ContentProvider";
 
 export class WhatsNewPageBuilder {
 
@@ -146,6 +146,23 @@ export class WhatsNewPageBuilder {
         }
         supportButtonsString = supportButtonsString.concat("</div>");
         this.htmlFile = this.htmlFile.replace("${supportButtons}", supportButtonsString);
+        return this;
+    }
+
+    public updateSocialMedias(socialMedias: SocialMedia[]): WhatsNewPageBuilder {
+        if (!socialMedias || socialMedias.length === 0) {
+            this.htmlFile = this.htmlFile.replace("${socialMedias}", "");
+            return this;
+        }
+
+        let socialMediasString = '';
+
+        for (const sm of socialMedias) {
+            socialMediasString = socialMediasString.concat(
+                `<li><a title="${sm.title}" href="${sm.link}">${sm.title}</a></li>`
+            );
+        }
+        this.htmlFile = this.htmlFile.replace("${socialMedias}", socialMediasString);
         return this;
     }
 

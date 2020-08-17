@@ -69,3 +69,12 @@ export interface ContentProvider {
     provideSponsors(): Sponsor[];
     provideSupportButtons(): SupportChannel[];
 }
+
+export interface SocialMedia {
+    link: string;
+    title: string;
+}
+
+export interface SocialMediaProvider {
+    provideSocialMedias(): SocialMedia[];
+}

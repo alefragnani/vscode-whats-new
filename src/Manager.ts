@@ -6,7 +6,7 @@
 import path = require("path");
 import * as semver from "semver";
 import * as vscode from "vscode";
-import { ContentProvider } from "./ContentProvider";
+import { ContentProvider, SocialMediaProvider } from "./ContentProvider";
 import { WhatsNewPageBuilder } from "./PageBuilder";
 
 export class WhatsNewManager {
@@ -15,6 +15,7 @@ export class WhatsNewManager {
     private extensionName: string;
     private context: vscode.ExtensionContext;
     private contentProvider: ContentProvider;
+    private socialMediaProvider: SocialMediaProvider;
 
     private extension: vscode.Extension<any>;
     
@@ -27,6 +28,11 @@ export class WhatsNewManager {
         this.extensionName = extensionName
         this.contentProvider = contentProvider;
 
+        return this;
+    }
+
+    public registerSocialMediaProvider(socialMediaProvider: SocialMediaProvider): WhatsNewManager {
+        this.socialMediaProvider = socialMediaProvider;
         return this;
     }
 
@@ -94,6 +100,7 @@ export class WhatsNewManager {
             .updateChangeLog(this.contentProvider.provideChangeLog())
             .updateSponsors(this.contentProvider.provideSponsors())
             .updateSupportButtons(this.contentProvider.provideSupportButtons())
+            .updateSocialMedias(this.socialMediaProvider?.provideSocialMedias())
             .build();
     }
  }
