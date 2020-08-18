@@ -66,7 +66,7 @@ export interface SupportChannel {
 export interface ContentProvider {
     provideHeader(logoUrl: string): Header;
     provideChangeLog(): ChangeLogItem[];
-    provideSupportButtons(): SupportChannel[];
+    provideSupportChannels(): SupportChannel[];
 }
 
 export interface SponsorProvider {

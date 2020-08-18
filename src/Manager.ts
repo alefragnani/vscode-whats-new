@@ -105,7 +105,7 @@ export class WhatsNewManager {
             .updateHeader(this.contentProvider.provideHeader(logoUrl))
             .updateChangeLog(this.contentProvider.provideChangeLog())
             .updateSponsors(this.sponsorProvider?.provideSponsors())
-            .updateSupportButtons(this.contentProvider.provideSupportButtons())
+            .updateSupportChannels(this.contentProvider.provideSupportChannels())
             .updateSocialMedias(this.socialMediaProvider?.provideSocialMedias())
             .build();
     }

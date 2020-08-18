@@ -129,23 +129,23 @@ export class WhatsNewPageBuilder {
         return this;
     }
 
-    public updateSupportButtons(supportButtons: SupportChannel[]): WhatsNewPageBuilder {
-        if (supportButtons.length === 0) {
-            this.htmlFile = this.htmlFile.replace("${supportButtons}", "");
+    public updateSupportChannels(supportChannels: SupportChannel[]): WhatsNewPageBuilder {
+        if (supportChannels.length === 0) {
+            this.htmlFile = this.htmlFile.replace("${supportChannels}", "");
             return this;
         }
 
-        let supportButtonsString = `<div class="button-group button-group--support-alefragnani">`;
+        let supportChannelsString = `<div class="button-group button-group--support-alefragnani">`;
 
-        for (const sc of supportButtons) {
-            supportButtonsString = supportButtonsString.concat(
+        for (const sc of supportChannels) {
+            supportChannelsString = supportChannelsString.concat(
                 `<a class="button button--flat-primary" title="${sc.title}" href="${sc.link}" target="_blank">
                     ${sc.message} 
                 </a>`
             )           
         }
-        supportButtonsString = supportButtonsString.concat("</div>");
-        this.htmlFile = this.htmlFile.replace("${supportButtons}", supportButtonsString);
+        supportChannelsString = supportChannelsString.concat("</div>");
+        this.htmlFile = this.htmlFile.replace("${supportChannels}", supportChannelsString);
         return this;
     }
 
