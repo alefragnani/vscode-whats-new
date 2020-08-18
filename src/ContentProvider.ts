@@ -66,8 +66,11 @@ export interface SupportChannel {
 export interface ContentProvider {
     provideHeader(logoUrl: string): Header;
     provideChangeLog(): ChangeLogItem[];
-    provideSponsors(): Sponsor[];
     provideSupportButtons(): SupportChannel[];
+}
+
+export interface SponsorProvider {
+    provideSponsors(): Sponsor[];
 }
 
 export interface SocialMedia {

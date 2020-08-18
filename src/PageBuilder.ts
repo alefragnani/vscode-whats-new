@@ -107,7 +107,7 @@ export class WhatsNewPageBuilder {
     }
 
     public updateSponsors(sponsors: Sponsor[]): WhatsNewPageBuilder {
-        if (sponsors.length === 0) {
+        if (!sponsors || sponsors.length === 0) {
             this.htmlFile = this.htmlFile.replace("${sponsors}", "");
             return this;
         }
