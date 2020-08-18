@@ -37,7 +37,7 @@ export class WhatsNewBookmarksContentProvider implements ContentProvider {
 
 // register the provider
 const provider = new WhatsNewBookmarksContentProvider();
-const viewer = new WhatsNewManager(context).registerContentProvider("bookmarks", provider);
+const viewer = new WhatsNewManager(context).registerContentProvider("alefragnani", "bookmarks", provider);
 
 // show the page (if necessary)
 viewer.showPageInActivation();
