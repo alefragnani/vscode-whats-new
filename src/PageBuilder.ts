@@ -5,7 +5,7 @@
 
 import * as fs from "fs";
 import * as semver from "semver";
-import { ChangeLogItem, ChangeLogIssue, ChangeLogVersion, ChangeLogKind, Header, Sponsor, IssueKind } from "./ContentProvider";
+import { ChangeLogItem, ChangeLogIssue, ChangeLogVersion, ChangeLogKind, Header, Sponsor, IssueKind, SupportChannel, SocialMedia } from "./ContentProvider";
 
 export class WhatsNewPageBuilder {
 
@@ -18,6 +18,11 @@ export class WhatsNewPageBuilder {
 
     constructor(htmlFile: string) {
         this.htmlFile = fs.readFileSync(htmlFile).toString();
+    }
+
+    public updateExtensionPublisher(publisher: string) {
+        this.htmlFile = this.htmlFile.replace(/\$\{publisher\}/g, publisher);
+        return this;
     }
 
     public updateExtensionDisplayName(extensionDisplayName: string) {
@@ -102,7 +107,7 @@ export class WhatsNewPageBuilder {
     }
 
     public updateSponsors(sponsors: Sponsor[]): WhatsNewPageBuilder {
-        if (sponsors.length === 0) {
+        if (!sponsors || sponsors.length === 0) {
             this.htmlFile = this.htmlFile.replace("${sponsors}", "");
             return this;
         }
@@ -121,6 +126,43 @@ export class WhatsNewPageBuilder {
         }
         sponsorsString = sponsorsString.concat("</p>");
         this.htmlFile = this.htmlFile.replace("${sponsors}", sponsorsString);
+        return this;
+    }
+
+    public updateSupportChannels(supportChannels: SupportChannel[]): WhatsNewPageBuilder {
+        if (supportChannels.length === 0) {
+            this.htmlFile = this.htmlFile.replace("${supportChannels}", "");
+            return this;
+        }
+
+        let supportChannelsString = `<div class="button-group button-group--support-alefragnani">`;
+
+        for (const sc of supportChannels) {
+            supportChannelsString = supportChannelsString.concat(
+                `<a class="button button--flat-primary" title="${sc.title}" href="${sc.link}" target="_blank">
+                    ${sc.message} 
+                </a>`
+            )           
+        }
+        supportChannelsString = supportChannelsString.concat("</div>");
+        this.htmlFile = this.htmlFile.replace("${supportChannels}", supportChannelsString);
+        return this;
+    }
+
+    public updateSocialMedias(socialMedias: SocialMedia[]): WhatsNewPageBuilder {
+        if (!socialMedias || socialMedias.length === 0) {
+            this.htmlFile = this.htmlFile.replace("${socialMedias}", "");
+            return this;
+        }
+
+        let socialMediasString = '';
+
+        for (const sm of socialMedias) {
+            socialMediasString = socialMediasString.concat(
+                `<li><a title="${sm.title}" href="${sm.link}">${sm.title}</a></li>`
+            );
+        }
+        this.htmlFile = this.htmlFile.replace("${socialMedias}", socialMediasString);
         return this;
     }
 
