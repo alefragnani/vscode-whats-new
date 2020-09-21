@@ -17,11 +17,34 @@ export interface Header {
 }
 
 // changelog
-export enum ChangeLogKind { NEW = "NEW", CHANGED = "CHANGED", FIXED = "FIXED" };
+export enum ChangeLogKind { 
+    NEW = "NEW", 
+    CHANGED = "CHANGED", 
+    FIXED = "FIXED", 
+    VERSION = "VERSION",
+    INTERNAL = "INTERNAL"
+}
+
+export enum IssueKind { 
+    Issue = "Issue", 
+    PR = "PR" 
+}
+
+export interface ChangeLogIssue {
+    message: string;
+    id: number;
+    kind: IssueKind;
+    kudos?: string;
+}
+
+export interface ChangeLogVersion {
+    releaseNumber: string;
+    releaseDate: string;
+}
 
 export interface ChangeLogItem {
     kind: ChangeLogKind;
-    message: string;
+    detail: ChangeLogIssue | ChangeLogVersion;
 }
 
 // sponsor
@@ -34,8 +57,27 @@ export interface Sponsor {
     extra: string;
 }
 
+export interface SupportChannel {
+    title: string;
+    link: string;
+    message: string;
+}
+
 export interface ContentProvider {
     provideHeader(logoUrl: string): Header;
     provideChangeLog(): ChangeLogItem[];
+    provideSupportChannels(): SupportChannel[];
+}
+
+export interface SponsorProvider {
     provideSponsors(): Sponsor[];
+}
+
+export interface SocialMedia {
+    link: string;
+    title: string;
+}
+
+export interface SocialMediaProvider {
+    provideSocialMedias(): SocialMedia[];
 }
