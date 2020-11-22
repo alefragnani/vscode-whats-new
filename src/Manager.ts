@@ -11,14 +11,14 @@ import { WhatsNewPageBuilder } from "./PageBuilder";
 
 export class WhatsNewManager {
 
-    private publisher: string;
-    private extensionName: string;
+    private publisher!: string;
+    private extensionName!: string;
     private context: vscode.ExtensionContext;
-    private contentProvider: ContentProvider;
-    private socialMediaProvider: SocialMediaProvider;
-    private sponsorProvider: SponsorProvider;
+    private contentProvider!: ContentProvider;
+    private socialMediaProvider!: SocialMediaProvider | undefined;
+    private sponsorProvider: SponsorProvider | undefined;
 
-    private extension: vscode.Extension<any>;
+    private extension!: vscode.Extension<any>;
     
     constructor(context: vscode.ExtensionContext) {
         this.context = context;
@@ -44,7 +44,8 @@ export class WhatsNewManager {
 
     public showPageInActivation() {
         // load data from extension manifest
-        this.extension = vscode.extensions.getExtension(`${this.publisher}.${this.extensionName}`);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.extension = vscode.extensions.getExtension(`${this.publisher}.${this.extensionName}`)!;
 
         const previousExtensionVersion = this.context.globalState.get<string>(`${this.extensionName}.version`);
 
@@ -75,7 +76,7 @@ export class WhatsNewManager {
         panel.webview.html = this.getWebviewContentLocal(pageUri.fsPath, cssUri.toString(), logoUri.toString());
     }
 
-    public showPageIfVersionDiffers(currentVersion: string, previousVersion: string) {
+    public showPageIfVersionDiffers(currentVersion: string, previousVersion: string | undefined) {
 
         if (previousVersion) {
             const differs: semver.ReleaseType | null = semver.diff(currentVersion, previousVersion);

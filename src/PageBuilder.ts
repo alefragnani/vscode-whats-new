@@ -14,7 +14,7 @@ export class WhatsNewPageBuilder {
     }
 
     private htmlFile: string;
-    private repositoryUrl: string;
+    private repositoryUrl!: string;
 
     constructor(htmlFile: string) {
         this.htmlFile = fs.readFileSync(htmlFile).toString();
@@ -106,7 +106,7 @@ export class WhatsNewPageBuilder {
         return this;
     }
 
-    public updateSponsors(sponsors: Sponsor[]): WhatsNewPageBuilder {
+    public updateSponsors(sponsors: Sponsor[] | undefined): WhatsNewPageBuilder {
         if (!sponsors || sponsors.length === 0) {
             this.htmlFile = this.htmlFile.replace("${sponsors}", "");
             return this;
@@ -149,7 +149,7 @@ export class WhatsNewPageBuilder {
         return this;
     }
 
-    public updateSocialMedias(socialMedias: SocialMedia[]): WhatsNewPageBuilder {
+    public updateSocialMedias(socialMedias: SocialMedia[] | undefined): WhatsNewPageBuilder {
         if (!socialMedias || socialMedias.length === 0) {
             this.htmlFile = this.htmlFile.replace("${socialMedias}", "");
             return this;
@@ -185,7 +185,7 @@ export class WhatsNewPageBuilder {
                 return "internal";
         
             default:
-                break;
+                return "internal";
         }
     }
 }
