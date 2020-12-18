@@ -116,7 +116,7 @@ export class WhatsNewPageBuilder {
                     <img src="${sp.image}" width="${sp.width}%"/>
                 </a>
                 ${sp.message} 
-                ${sp.extra}`
+                ${sp.extra}<br><br>`
             )           
         }
         sponsorsString = sponsorsString.concat("</p>");
