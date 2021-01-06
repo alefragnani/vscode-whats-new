@@ -111,13 +111,21 @@ export class WhatsNewPageBuilder {
           <h2>Sponsors</h2>`;
 
         for (const sp of sponsors) {
-            sponsorsString = sponsorsString.concat(
-                `<a title="${sp.title}" href="${sp.link}">
+            if (sp.message) {
+                sponsorsString = sponsorsString.concat(
+                    `<a title="${sp.title}" href="${sp.link}">
                     <img src="${sp.image}" width="${sp.width}%"/>
-                </a>
-                ${sp.message} 
-                ${sp.extra}<br><br>`
-            )           
+                    </a>
+                    ${sp.message} 
+                    ${sp.extra}<br><br>`
+                );
+            } else {
+                sponsorsString = sponsorsString.concat(
+                    `<div align="center"><a title="${sp.title}" href="${sp.link}">
+                    <img  src="${sp.image}" width="${sp.width}%"/>
+                    </a></div>`
+                );           
+            }
         }
         sponsorsString = sponsorsString.concat("</p>");
         this.htmlFile = this.htmlFile.replace("${sponsors}", sponsorsString);
