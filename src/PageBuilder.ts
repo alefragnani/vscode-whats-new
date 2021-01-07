@@ -128,7 +128,7 @@ export class WhatsNewPageBuilder {
                 sponsorsString = sponsorsString.concat(
                     `<div align="center"><a title="${sp.title}" href="${sp.link}">
                     <img  src="${sp.image}" width="${sp.width}%"/>
-                    </a></div>`
+                    </a></div><br>`
                 );           
             }
         }
