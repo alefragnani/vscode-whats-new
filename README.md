@@ -9,9 +9,9 @@ This submodule is used to display a **What's New** page on my VS Code extensions
 ```ts
 
 // provide the data
-import { ChangeLogItem, ChangeLogKind, ContentProvider, Header, Image } from "../../vscode-whats-new/src/ContentProvider";
+import { ChangeLogItem, ChangeLogKind, ContentProvider, SocialMediaProvider, Header, Image } from "../../vscode-whats-new/src/ContentProvider";
 
-export class WhatsNewBookmarksContentProvider implements ContentProvider {
+export class BookmarksContentProvider implements ContentProvider {
 
     provideHeader(logoUrl: string): Header {
         return <Header>{logo: <Image> {src: logoUrl, height: 50, width: 50}, 
@@ -35,9 +35,20 @@ export class WhatsNewBookmarksContentProvider implements ContentProvider {
             Issue #212</a>)`});
 }
 
+export class BookmarksSocialMediaProvider implements SocialMediaProvider {
+    public provideSocialMedias() {
+        return [{
+            title: "Follow me on Twitter",
+            link: "https://www.twitter.com/alefragnani"
+        }];
+    }
+}
+
 // register the provider
-const provider = new WhatsNewBookmarksContentProvider();
-const viewer = new WhatsNewManager(context).registerContentProvider("alefragnani", "bookmarks", provider);
+const provider = new BookmarksContentProvider();
+const viewer = new WhatsNewManager(context)
+    .registerContentProvider("alefragnani", "bookmarks", provider)
+    .registerSocialMediaProvider(new BookmarksSocialMediaProvider());
 
 // show the page (if necessary)
 viewer.showPageInActivation();
