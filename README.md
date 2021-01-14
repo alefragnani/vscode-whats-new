@@ -9,7 +9,14 @@ This submodule is used to display a **What's New** page on my VS Code extensions
 ```ts
 
 // provide the data
-import { ChangeLogItem, ChangeLogKind, ContentProvider, SocialMediaProvider, Header, Image } from "../../vscode-whats-new/src/ContentProvider";
+import { ChangeLogItem, 
+         ChangeLogKind, 
+         ContentProvider, 
+         SocialMediaProvider, 
+         SponsorProvider, 
+         Header, 
+         Image
+} from "../../vscode-whats-new/src/ContentProvider";
 
 export class BookmarksContentProvider implements ContentProvider {
 
@@ -24,15 +31,32 @@ export class BookmarksContentProvider implements ContentProvider {
 
     provideChangeLog(): ChangeLogItem[] {
         let changeLog: ChangeLogItem[] = [];
-        changeLog.push({kind: ChangeLogKind.NEW, message: `Show only filename in Side Bar - (<a title=\"Open Issue #149\" 
-            href=\"https://github.com/alefragnani/vscode-bookmarks/issues/149\">
-            Issue #149</a>)`});
-        changeLog.push({kind: ChangeLogKind.CHANGED, message: `The <b>Expand Selection...</b> commands now works even if the file has only one Bookmark (<a title=\"Open Issue #120\" 
-            href=\"https://github.com/alefragnani/vscode-bookmarks/issues/120\">
-            PR #120</a>)`});
-        changeLog.push({kind: ChangeLogKind.FIXED, message: `Activation error for "No-Folders Workspace" scenario (<a title=\"Open Issue #212\" 
-            href=\"https://github.com/alefragnani/vscode-bookmarks/issues/212\">
-            Issue #212</a>)`});
+        changeLog.push({ kind: ChangeLogKind.VERSION, detail: { releaseNumber: "12.1.0", releaseDate: "December 2020" } });
+        changeLog.push({
+            kind: ChangeLogKind.NEW,
+            detail: {
+                message: "Support submenu for editor commands",
+                id: 351,
+                kind: IssueKind.Issue
+            }
+        });
+        changeLog.push({
+            kind: ChangeLogKind.CHANGED,
+            detail: {
+                message: "Setting <b>bookmarks.navigateThroughAllFiles</b> is now <b>true</b> by default",
+                id: 102,
+                kind: IssueKind.Issue
+            }
+        });
+        changeLog.push({
+            kind: ChangeLogKind.INTERNAL,
+            detail: {
+                message: "Remove unnecessary files from extension package",
+                id: 355,
+                kind: IssueKind.Issue
+            }
+        });
+    }
 }
 
 export class BookmarksSocialMediaProvider implements SocialMediaProvider {
@@ -44,11 +68,35 @@ export class BookmarksSocialMediaProvider implements SocialMediaProvider {
     }
 }
 
-// register the provider
+export class BookmarksSponsorProvider implements SponsorProvider {
+    public provideSponsors(): Sponsor[] {
+        const sponsors: Sponsor[] = [];
+        const sponsorCodeStream: Sponsor = <Sponsor>{
+            title: "Learn more about Codestream",
+            link: "https://sponsorlink.codestream.com/?utm_source=vscmarket&utm_campaign=bookmarks&utm_medium=banner",
+            image: {
+                light: "https://alt-images.codestream.com/codestream_logo_bookmarks.png",
+                dark: "https://alt-images.codestream.com/codestream_logo_bookmarks.png"
+            },
+            width: 52,
+            message: `<p>Eliminate context switching and costly distractions. 
+                Create and merge PRs and perform code reviews from inside your 
+                IDE while using jump-to-definition, your keybindings, and other IDE favorites.</p>`,
+            extra:
+                `<a title="Learn more about CodeStream" href="https://sponsorlink.codestream.com/?utm_source=vscmarket&utm_campaign=bookmarks&utm_medium=banner">
+                Learn more</a>`
+        };
+        sponsors.push(sponsorCodeStream);
+        return sponsors;
+    }
+}
+
+// register the providers
 const provider = new BookmarksContentProvider();
 const viewer = new WhatsNewManager(context)
     .registerContentProvider("alefragnani", "bookmarks", provider)
-    .registerSocialMediaProvider(new BookmarksSocialMediaProvider());
+    .registerSocialMediaProvider(new BookmarksSocialMediaProvider())
+    .registerSponsorProvider(new BookmarksSponsorProvider());
 
 // show the page (if necessary)
 viewer.showPageInActivation();
