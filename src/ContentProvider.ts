@@ -44,7 +44,7 @@ export interface ChangeLogVersion {
 
 export interface ChangeLogItem {
     kind: ChangeLogKind;
-    detail: ChangeLogIssue | ChangeLogVersion;
+    detail: ChangeLogIssue | ChangeLogVersion | string ;
 }
 
 export interface Image {
