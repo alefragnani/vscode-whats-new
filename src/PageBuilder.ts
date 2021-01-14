@@ -119,7 +119,8 @@ export class WhatsNewPageBuilder {
             if (sp.message) {
                 sponsorsString = sponsorsString.concat(
                     `<a title="${sp.title}" href="${sp.link}">
-                    <img src="${sp.image}" width="${sp.width}%"/>
+                    <img class="dark" src="${sp.image.light}" width="${sp.width}%"/>
+                    <img class="light" src="${sp.image.dark}" width="${sp.width}%"/>
                     </a>
                     ${sp.message} 
                     ${sp.extra}<br><br>`
@@ -127,7 +128,8 @@ export class WhatsNewPageBuilder {
             } else {
                 sponsorsString = sponsorsString.concat(
                     `<div align="center"><a title="${sp.title}" href="${sp.link}">
-                    <img  src="${sp.image}" width="${sp.width}%"/>
+                    <img class="dark" src="${sp.image.light}" width="${sp.width}%"/>
+                    <img class="light" src="${sp.image.dark}" width="${sp.width}%"/>
                     </a></div><br>`
                 );           
             }
