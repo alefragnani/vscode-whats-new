@@ -19,6 +19,7 @@ export class WhatsNewManager {
     private sponsorProvider: SponsorProvider | undefined;
 
     private extension!: vscode.Extension<any>;
+    private versionKey!: string;
     
     constructor(context: vscode.ExtensionContext) {
         this.context = context;
@@ -28,6 +29,9 @@ export class WhatsNewManager {
         this.publisher = publisher;
         this.extensionName = extensionName
         this.contentProvider = contentProvider;
+        this.versionKey = `${this.extensionName}.version`;
+
+        this.context.globalState.setKeysForSync([this.versionKey]);
 
         return this;
     }
@@ -47,7 +51,7 @@ export class WhatsNewManager {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.extension = vscode.extensions.getExtension(`${this.publisher}.${this.extensionName}`)!;
 
-        const previousExtensionVersion = this.context.globalState.get<string>(`${this.extensionName}.version`);
+        const previousExtensionVersion = this.context.globalState.get<string>(this.versionKey);
 
         this.showPageIfVersionDiffers(this.extension.packageJSON.version, previousExtensionVersion);
     }
@@ -88,7 +92,7 @@ export class WhatsNewManager {
         }
 
         // "major", "minor"
-        this.context.globalState.update(`${this.extensionName}.version`, currentVersion);
+        this.context.globalState.update(this.versionKey, currentVersion);
         this.showPage();
     }
 
