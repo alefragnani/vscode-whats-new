@@ -20,11 +20,15 @@ export class WhatsNewManager {
 
     private extension!: vscode.Extension<any>;
     private versionKey!: string;
-    
+
     constructor(context: vscode.ExtensionContext) {
         this.context = context;
     }
-    
+
+    private isRunningOnCodespaces(): boolean {
+        return vscode.env.remoteName?.toLocaleLowerCase() === 'codespaces';
+    }
+
     public registerContentProvider(publisher: string, extensionName: string, contentProvider: ContentProvider): WhatsNewManager {
         this.publisher = publisher;
         this.extensionName = extensionName
@@ -59,7 +63,7 @@ export class WhatsNewManager {
     public showPage() {
 
         // Create and show panel
-        const panel = vscode.window.createWebviewPanel(`${this.extensionName}.whatsNew`, 
+        const panel = vscode.window.createWebviewPanel(`${this.extensionName}.whatsNew`,
             `What's New in ${this.extension.packageJSON.displayName}`, vscode.ViewColumn.One, { enableScripts: true });
 
         // Get path to resource on disk
@@ -70,13 +74,13 @@ export class WhatsNewManager {
         // Local path to main script run in the webview
         const cssPathOnDisk = vscode.Uri.file(
             path.join(this.context.extensionPath, "vscode-whats-new", "ui", "main.css"));
-        const cssUri = cssPathOnDisk.with({ scheme: "vscode-resource" });        
+        const cssUri = cssPathOnDisk.with({ scheme: "vscode-resource" });
 
         // Local path to main script run in the webview
         const logoPathOnDisk = vscode.Uri.file(
             path.join(this.context.extensionPath, "images", `vscode-${this.extensionName.toLowerCase()}-logo-readme.png`));
-        const logoUri = logoPathOnDisk.with({ scheme: "vscode-resource" });  
-        
+        const logoUri = logoPathOnDisk.with({ scheme: "vscode-resource" });
+
         panel.webview.html = this.getWebviewContentLocal(pageUri.fsPath, cssUri.toString(), logoUri.toString());
     }
 
@@ -84,7 +88,7 @@ export class WhatsNewManager {
 
         if (previousVersion) {
             const differs: semver.ReleaseType | null = semver.diff(currentVersion, previousVersion);
-            
+
             // only "patch" should be suppressed
             if (!differs || differs === "patch") {
                 return;
@@ -93,6 +97,12 @@ export class WhatsNewManager {
 
         // "major", "minor"
         this.context.globalState.update(this.versionKey, currentVersion);
+
+        // 
+        if (this.isRunningOnCodespaces()) {
+            return;
+        }
+
         this.showPage();
     }
 
@@ -114,4 +124,4 @@ export class WhatsNewManager {
             .updateSocialMedias(this.socialMediaProvider?.provideSocialMedias())
             .build();
     }
- }
+}
