@@ -12,6 +12,7 @@ import { WhatsNewPageBuilder } from "./PageBuilder";
 export class WhatsNewManager {
 
     private extensionName: string;
+    private extensionReleaseVersion: string;
     // private extensionDisplayName: string;
     // private extensionVersion: string;
     private context: vscode.ExtensionContext;
@@ -34,6 +35,7 @@ export class WhatsNewManager {
     public showPageInActivation() {
         // load data from extension manifest
         this.extension = vscode.extensions.getExtension(`alefragnani.${this.extensionName}`);
+        this.extensionReleaseVersion = `${semver.major(this.extension.packageJSON.version)}.${semver.minor(this.extension.packageJSON.version)}`;
         // this.extensionVersion = this.extension.packageJSON.version;
         // this.extensionDisplayName = this.extension.packageJSON.displayName;
 
@@ -48,7 +50,8 @@ export class WhatsNewManager {
 
         // Create and show panel
         const panel = vscode.window.createWebviewPanel(`${this.extensionName}.whatsNew`, 
-            `What's New in ${this.extension.packageJSON.displayName}`, vscode.ViewColumn.One, { enableScripts: true });
+            `What's New in ${this.extension.packageJSON.displayName} ${this.extensionReleaseVersion}`, 
+            vscode.ViewColumn.One, { enableScripts: true });
 
         // Get path to resource on disk
         const onDiskPath = vscode.Uri.file(
@@ -86,7 +89,7 @@ export class WhatsNewManager {
         return WhatsNewPageBuilder.newBuilder(htmlFile)
             .updateExtensionDisplayName(this.extension.packageJSON.displayName)
             .updateExtensionName(this.extensionName)
-            .updateExtensionVersion(this.extension.packageJSON.version)
+            .updateExtensionVersion(this.extensionReleaseVersion)
             .updateRepositoryUrl(this.extension.packageJSON.repository.url.slice(
                 0, this.extension.packageJSON.repository.url.length - 4))
             .updateRepositoryIssues(this.extension.packageJSON.bugs.url)
