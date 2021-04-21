@@ -1,11 +1,20 @@
+/*---------------------------------------------------------------------------------------------
+*  Copyright (c) Eric Amodio & Alessandro Fragnani. All rights reserved.
+*  Licensed under the MIT License. See License.md in the project root for license information.
+*
+*  Original Author: Eric Amodio @ GitLens
+*  Modifications by: Alessandro Fragnani
+*--------------------------------------------------------------------------------------------*/
+
 html {
   height: 100%; }
 
 body {
   background-color: var(--vscode-editor-background);
   color: var(--vscode-editor-foreground);
-  font-family: var(--vscode-editor-font-family);
+  font-family: var(--vscode-font-family);
   height: 100%;
+  opacity: 0.85;
   line-height: 1.4; }
 
 a {
@@ -55,7 +64,7 @@ header {
   margin-bottom: 1em; }
 
 input, select, button {
-  font-family: var(--vscode-editor-font-family);
+  font-family: var(--vscode-font-family);
   font-size: inherit;
   margin: 0; }
 
@@ -205,9 +214,30 @@ ul {
 .changelog__badge--fixed {
   background-color: var(--vscode-gitDecoration-conflictingResourceForeground); }
 
+.changelog__badge--internal {
+  background-color: var(--vscode-gitDecoration-modifiedResourceForeground); }
+
 .changelog__badge--version {
-  background-color: var(--vscode-activityBarBadge-background);
-  font-size: 15px; }
+  background-color: var(--vscode-activityBarBadge-background); 
+  height: 24px;
+  vertical-align: middle;
+  font-size: 15px; } 
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.changelog__version__borders {
+  border-color: rgba(125, 125, 125, .15);
+  border-spacing: 50px;
+  border-width: thin;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.changelog__version__borders__top {
+  border-top-style: solid;
+}
 
 .changelog__date {
   font-size: 0.8em;

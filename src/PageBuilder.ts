@@ -4,7 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 
 import * as fs from "fs";
-import { ChangeLogItem, ChangeLogKind, Header, Sponsor } from "./ContentProvider";
+import * as semver from "semver";
+import { ChangeLogItem, ChangeLogIssue, ChangeLogVersion, ChangeLogKind, Header, Sponsor, IssueKind, SupportChannel, SocialMedia } from "./ContentProvider";
 
 export class WhatsNewPageBuilder {
 
@@ -13,9 +14,15 @@ export class WhatsNewPageBuilder {
     }
 
     private htmlFile: string;
+    private repositoryUrl: string;
 
     constructor(htmlFile: string) {
         this.htmlFile = fs.readFileSync(htmlFile).toString();
+    }
+
+    public updateExtensionPublisher(publisher: string) {
+        this.htmlFile = this.htmlFile.replace(/\$\{publisher\}/g, publisher);
+        return this;
     }
 
     public updateExtensionDisplayName(extensionDisplayName: string) {
@@ -29,13 +36,14 @@ export class WhatsNewPageBuilder {
     }
 
     public updateExtensionVersion(extensionVersion: string) {
-        this.htmlFile = this.htmlFile.replace("${extensionVersion}", extensionVersion.slice(
-            0, extensionVersion.indexOf(".")));
+        this.htmlFile = this.htmlFile.replace("${extensionVersion}", 
+            `${semver.major(extensionVersion)}.${semver.minor(extensionVersion)}`);
         return this;
     }
 
     public updateRepositoryUrl(repositoryUrl: string) {
         this.htmlFile = this.htmlFile.replace(/\$\{repositoryUrl\}/g, repositoryUrl);
+        this.repositoryUrl = repositoryUrl;
         return this;
     }
 
@@ -63,27 +71,48 @@ export class WhatsNewPageBuilder {
     }
 
     public updateChangeLog(changeLog: ChangeLogItem[]): WhatsNewPageBuilder {
-        let changeLogString: string = "";
+        let changeLogString = "";
 
         for (const cl of changeLog) {
-            const badge: string = this.getBadgeFromChangeLogKind(cl.kind);
-            changeLogString = changeLogString.concat(
-                `<li><span class="changelog__badge changelog__badge--${badge}">${cl.kind}</span>
-                    ${cl.message}
-                </li>`
-            )           
+            if (cl.kind === ChangeLogKind.VERSION) {
+                const cc: ChangeLogVersion = <ChangeLogVersion>cl.detail;
+                const borderTop = changeLogString === "" ? "" : "changelog__version__borders__top";
+                changeLogString = changeLogString.concat(
+                    `<li class="changelog__version__borders ${borderTop}">
+                        <span class="changelog__badge changelog__badge--version">${cc.releaseNumber}</span>
+                        <span class="uppercase bold">${cc.releaseDate}</span>
+                    </li>`);
+            } else {
+                const badge: string = this.getBadgeFromChangeLogKind(cl.kind);
+                const cc: ChangeLogIssue = <ChangeLogIssue>cl.detail;
+                let message: string;
+                if (cc.kind === IssueKind.Issue) {
+                    message = `${cc.message}
+                        (<a title="Open Issue #${cc.id}" 
+                        href="${this.repositoryUrl}/issues/${cc.id}">Issue #${cc.id}</a>)`
+                } else {
+                    message = `${cc.message}
+                        (Thanks to ${cc.kudos} - <a title="Open PR #${cc.id}" 
+                        href="${this.repositoryUrl}/pull/${cc.id}">PR #${cc.id}</a>)`
+                }
+                changeLogString = changeLogString.concat(
+                    `<li><span class="changelog__badge changelog__badge--${badge}">${cl.kind}</span>
+                        ${message}
+                    </li>`
+                );
+            }
         }
         this.htmlFile = this.htmlFile.replace("${changeLog}", changeLogString);
         return this;
     }
 
     public updateSponsors(sponsors: Sponsor[]): WhatsNewPageBuilder {
-        if (sponsors.length === 0) {
+        if (!sponsors || sponsors.length === 0) {
             this.htmlFile = this.htmlFile.replace("${sponsors}", "");
             return this;
         }
 
-        let sponsorsString: string = `<p>
+        let sponsorsString = `<p>
           <h2>Sponsors</h2>`;
 
         for (const sp of sponsors) {
@@ -97,6 +126,43 @@ export class WhatsNewPageBuilder {
         }
         sponsorsString = sponsorsString.concat("</p>");
         this.htmlFile = this.htmlFile.replace("${sponsors}", sponsorsString);
+        return this;
+    }
+
+    public updateSupportChannels(supportChannels: SupportChannel[]): WhatsNewPageBuilder {
+        if (supportChannels.length === 0) {
+            this.htmlFile = this.htmlFile.replace("${supportChannels}", "");
+            return this;
+        }
+
+        let supportChannelsString = `<div class="button-group button-group--support-alefragnani">`;
+
+        for (const sc of supportChannels) {
+            supportChannelsString = supportChannelsString.concat(
+                `<a class="button button--flat-primary" title="${sc.title}" href="${sc.link}" target="_blank">
+                    ${sc.message} 
+                </a>`
+            )           
+        }
+        supportChannelsString = supportChannelsString.concat("</div>");
+        this.htmlFile = this.htmlFile.replace("${supportChannels}", supportChannelsString);
+        return this;
+    }
+
+    public updateSocialMedias(socialMedias: SocialMedia[]): WhatsNewPageBuilder {
+        if (!socialMedias || socialMedias.length === 0) {
+            this.htmlFile = this.htmlFile.replace("${socialMedias}", "");
+            return this;
+        }
+
+        let socialMediasString = '';
+
+        for (const sm of socialMedias) {
+            socialMediasString = socialMediasString.concat(
+                `<li><a title="${sm.title}" href="${sm.link}">${sm.title}</a></li>`
+            );
+        }
+        this.htmlFile = this.htmlFile.replace("${socialMedias}", socialMediasString);
         return this;
     }
 
@@ -114,6 +180,9 @@ export class WhatsNewPageBuilder {
             
             case ChangeLogKind.FIXED:
                 return "fixed";
+        
+            case ChangeLogKind.INTERNAL:
+                return "internal";
         
             default:
                 break;
