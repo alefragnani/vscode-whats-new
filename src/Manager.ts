@@ -6,16 +6,17 @@
 import path = require("path");
 import * as semver from "semver";
 import * as vscode from "vscode";
-import { ContentProvider } from "./ContentProvider";
+import { ContentProvider, SocialMediaProvider, SponsorProvider } from "./ContentProvider";
 import { WhatsNewPageBuilder } from "./PageBuilder";
 
 export class WhatsNewManager {
 
+    private publisher: string;
     private extensionName: string;
-    // private extensionDisplayName: string;
-    // private extensionVersion: string;
     private context: vscode.ExtensionContext;
     private contentProvider: ContentProvider;
+    private socialMediaProvider: SocialMediaProvider;
+    private sponsorProvider: SponsorProvider;
 
     private extension: vscode.Extension<any>;
     
@@ -23,24 +24,30 @@ export class WhatsNewManager {
         this.context = context;
     }
     
-    public registerContentProvider(extensionName: string, contentProvider: ContentProvider): WhatsNewManager {
+    public registerContentProvider(publisher: string, extensionName: string, contentProvider: ContentProvider): WhatsNewManager {
+        this.publisher = publisher;
         this.extensionName = extensionName
-        // this.extensionName = extensionName.toLowerCase();
         this.contentProvider = contentProvider;
 
         return this;
     }
 
+    public registerSocialMediaProvider(socialMediaProvider: SocialMediaProvider): WhatsNewManager {
+        this.socialMediaProvider = socialMediaProvider;
+        return this;
+    }
+
+    public registerSponsorProvider(sponsorProvider: SponsorProvider): WhatsNewManager {
+        this.sponsorProvider = sponsorProvider;
+        return this;
+    }
+
     public showPageInActivation() {
         // load data from extension manifest
-        this.extension = vscode.extensions.getExtension(`alefragnani.${this.extensionName}`);
-        // this.extensionVersion = this.extension.packageJSON.version;
-        // this.extensionDisplayName = this.extension.packageJSON.displayName;
+        this.extension = vscode.extensions.getExtension(`${this.publisher}.${this.extensionName}`);
 
         const previousExtensionVersion = this.context.globalState.get<string>(`${this.extensionName}.version`);
 
-        // console.log(`${this.extensionName} (${this. extension.packageJSON.displayName}) - 
-        //     Version: ${this.extension.packageJSON.version}`);
         this.showPageIfVersionDiffers(this.extension.packageJSON.version, previousExtensionVersion);
     }
 
@@ -86,6 +93,7 @@ export class WhatsNewManager {
 
     private getWebviewContentLocal(htmlFile: string, cssUrl: string, logoUrl: string): string {
         return WhatsNewPageBuilder.newBuilder(htmlFile)
+            .updateExtensionPublisher(this.publisher)
             .updateExtensionDisplayName(this.extension.packageJSON.displayName)
             .updateExtensionName(this.extensionName)
             .updateExtensionVersion(this.extension.packageJSON.version)
@@ -96,7 +104,9 @@ export class WhatsNewManager {
             .updateCSS(cssUrl)
             .updateHeader(this.contentProvider.provideHeader(logoUrl))
             .updateChangeLog(this.contentProvider.provideChangeLog())
-            .updateSponsors(this.contentProvider.provideSponsors())
+            .updateSponsors(this.sponsorProvider?.provideSponsors())
+            .updateSupportChannels(this.contentProvider.provideSupportChannels())
+            .updateSocialMedias(this.socialMediaProvider?.provideSocialMedias())
             .build();
     }
  }
