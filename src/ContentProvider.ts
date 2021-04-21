@@ -47,16 +47,11 @@ export interface ChangeLogItem {
     detail: ChangeLogIssue | ChangeLogVersion | string ;
 }
 
-export interface Image {
-    light: string;
-    dark: string
-}
-
 // sponsor
 export interface Sponsor {
     title: string;
     link: string;
-    image: Image;
+    image: string;
     width: number;
     message: string;
     extra: string;
