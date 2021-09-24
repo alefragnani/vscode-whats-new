@@ -1,10 +1,21 @@
 # What's New submodule
 
-This submodule is used to display a **What's New** page on my VS Code extensions. It has a simple (but yet effective) UI, optimized to display all the information in a single page.
+This submodule is used to display a **What's New** page on VS Code extensions. It has a simple (but yet effective) UI, optimized to display all the information in a single page.
 
 ![whats-new-bookmarks](images/whats-new-bookmarks.png)
 
 ## Usage
+
+### Adding
+
+You just need to add a `submodule` reference to your Git repo
+
+```
+    git submodule add https://github.com/alefragnani/vscode-whats-new.git
+
+```
+
+### Coding
 
 ```ts
 
