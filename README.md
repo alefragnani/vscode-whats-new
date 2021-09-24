@@ -1,10 +1,28 @@
 # What's New submodule
 
-This submodule is used to display a **What's New** page on my VS Code extensions. It has a simple (but yet effective) UI, optimized to display all the information in a single page.
+This submodule is used to display a **What's New** page on VS Code extensions. It has a simple (but yet effective) UI, optimized to display all the information in a single page.
 
 ![whats-new-bookmarks](images/whats-new-bookmarks.png)
 
 ## Usage
+
+### Adding
+
+You just need to add a `submodule` reference to your Git repo
+
+```
+    git submodule add https://github.com/alefragnani/vscode-whats-new.git
+
+```
+
+### Coding
+
+This submodule is based on a `Provider` pattern (similar to some pieces of VS Code), and you need to implement at least the `ContentProvider` in order to display the main content of the page, like the Header (logo and message) and Changelog.
+
+There are other two providers available, for specific contents:
+
+* `SocialMediaProvider`": Add links to your social medias
+* `SponsorProvider`: Add references (logos and messages) to your sponsors.
 
 ```ts
 
