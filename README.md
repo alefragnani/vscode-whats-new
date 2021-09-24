@@ -17,6 +17,13 @@ You just need to add a `submodule` reference to your Git repo
 
 ### Coding
 
+This submodule is based on a `Provider` pattern (similar to some pieces of VS Code), and you need to implement at least the `ContentProvider` in order to display the main content of the page, like the Header (logo and message) and Changelog.
+
+There are other two providers available, for specific contents:
+
+* `SocialMediaProvider`": Add links to your social medias
+* `SponsorProvider`: Add references (logos and messages) to your sponsors.
+
 ```ts
 
 // provide the data
