@@ -110,7 +110,7 @@ export class WhatsNewManager {
                 0, this.extension.packageJSON.repository.url.length - 4))
             .updateRepositoryIssues(this.extension.packageJSON.bugs.url)
             .updateRepositoryHomepage(this.extension.packageJSON.homepage)
-            .updateCSS(cssUrl)
+            .updateCSS(webview.asWebviewUri(cssUrl).toString())
             .updateHeader(this.contentProvider.provideHeader(webview.asWebviewUri(logoUrl).toString()))
             .updateChangeLog(this.contentProvider.provideChangeLog())
             .updateSponsors(this.sponsorProvider?.provideSponsors())

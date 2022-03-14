@@ -66,8 +66,8 @@ export class WhatsNewPageBuilder {
         return this;
     }
 
-    public updateCSS(cssUrl: Uri): WhatsNewPageBuilder {
-        this.htmlFile = this.htmlFile.replace("${cssUrl}", this.webview.asWebviewUri(cssUrl).toString());
+    public updateCSS(cssUrl: string): WhatsNewPageBuilder {
+        this.htmlFile = this.htmlFile.replace("${cssUrl}", cssUrl);
         return this;
     }
 
