@@ -206,16 +206,16 @@ ul {
   width: 65px; }
 
 .changelog__badge--added {
-  background-color: var(--vscode-gitDecoration-untrackedResourceForeground); }
+  background-color: var(--vscode-problemsInfoIcon-foreground); }
 
 .changelog__badge--changed {
-  background-color: var(--vscode-gitDecoration-modifiedResourceForeground);
-}
+  background-color: var(--vscode-problemsWarningIcon-foreground); }
+
 .changelog__badge--fixed {
-  background-color: var(--vscode-gitDecoration-conflictingResourceForeground); }
+  background-color: var(--vscode-problemsErrorIcon-foreground); }
 
 .changelog__badge--internal {
-  background-color: var(--vscode-gitDecoration-modifiedResourceForeground); }
+  background-color: var(--vscode-problemsWarningIcon-foreground); }
 
 .changelog__badge--version {
   background-color: var(--vscode-activityBarBadge-background); 

@@ -3,9 +3,9 @@
 *  Licensed under the MIT License. See License.md in the project root for license information.
 *--------------------------------------------------------------------------------------------*/
 
-import path = require("path");
 import * as semver from "semver";
 import * as vscode from "vscode";
+import { Uri, Webview } from "vscode";
 import { ContentProvider, SocialMediaProvider, SponsorProvider } from "./ContentProvider";
 import { WhatsNewPageBuilder } from "./PageBuilder";
 
@@ -50,41 +50,35 @@ export class WhatsNewManager {
         return this;
     }
 
-    public showPageInActivation() {
+    public async showPageInActivation() {
         // load data from extension manifest
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.extension = vscode.extensions.getExtension(`${this.publisher}.${this.extensionName}`)!;
 
         const previousExtensionVersion = this.context.globalState.get<string>(this.versionKey);
 
-        this.showPageIfVersionDiffers(this.extension.packageJSON.version, previousExtensionVersion);
+        await this.showPageIfVersionDiffers(this.extension.packageJSON.version, previousExtensionVersion);
     }
 
-    public showPage() {
+    public async showPage() {
 
         // Create and show panel
         const panel = vscode.window.createWebviewPanel(`${this.extensionName}.whatsNew`,
             `What's New in ${this.extension.packageJSON.displayName}`, vscode.ViewColumn.One, { enableScripts: true });
 
-        // Get path to resource on disk
-        const onDiskPath = vscode.Uri.file(
-            path.join(this.context.extensionPath, "vscode-whats-new", "ui", "whats-new.html"));
-        const pageUri = onDiskPath.with({ scheme: "vscode-resource" });
+        // Path to HTML
+        const onDiskPath = vscode.Uri.joinPath(this.context.extensionUri, "vscode-whats-new", "ui", "whats-new.html");
 
-        // Local path to main script run in the webview
-        const cssPathOnDisk = vscode.Uri.file(
-            path.join(this.context.extensionPath, "vscode-whats-new", "ui", "main.css"));
-        const cssUri = cssPathOnDisk.with({ scheme: "vscode-resource" });
+        // Path to CSS
+        const cssPathOnDisk = vscode.Uri.joinPath(this.context.extensionUri, "vscode-whats-new", "ui", "main.css");
 
-        // Local path to main script run in the webview
-        const logoPathOnDisk = vscode.Uri.file(
-            path.join(this.context.extensionPath, "images", `vscode-${this.extensionName.toLowerCase()}-logo-readme.png`));
-        const logoUri = logoPathOnDisk.with({ scheme: "vscode-resource" });
+        // Path to Logo
+        const logoPathOnDisk = vscode.Uri.joinPath(this.context.extensionUri, "images", `vscode-${this.extensionName.toLowerCase()}-logo-readme.png`);
 
-        panel.webview.html = this.getWebviewContentLocal(pageUri.fsPath, cssUri.toString(), logoUri.toString());
+        panel.webview.html = await this.getWebviewContentLocal(panel.webview, onDiskPath, cssPathOnDisk, logoPathOnDisk);
     }
 
-    public showPageIfVersionDiffers(currentVersion: string, previousVersion: string | undefined) {
+    public async showPageIfVersionDiffers(currentVersion: string, previousVersion: string | undefined) {
 
         if (previousVersion) {
             const differs: semver.ReleaseType | null = semver.diff(currentVersion, previousVersion);
@@ -103,12 +97,12 @@ export class WhatsNewManager {
             return;
         }
 
-        this.showPage();
+        await this.showPage();
     }
 
-    private getWebviewContentLocal(htmlFile: string, cssUrl: string, logoUrl: string): string {
-        return WhatsNewPageBuilder.newBuilder(htmlFile)
-            .updateExtensionPublisher(this.publisher)
+    private async getWebviewContentLocal(webview: Webview, htmlFile: Uri, cssUrl: Uri, logoUrl: Uri): Promise<string> {
+        const pageBuilder = await WhatsNewPageBuilder.newBuilder(webview, htmlFile);
+        let html = pageBuilder.updateExtensionPublisher(this.publisher)
             .updateExtensionDisplayName(this.extension.packageJSON.displayName)
             .updateExtensionName(this.extensionName)
             .updateExtensionVersion(this.extension.packageJSON.version)
@@ -116,12 +110,18 @@ export class WhatsNewManager {
                 0, this.extension.packageJSON.repository.url.length - 4))
             .updateRepositoryIssues(this.extension.packageJSON.bugs.url)
             .updateRepositoryHomepage(this.extension.packageJSON.homepage)
-            .updateCSS(cssUrl)
-            .updateHeader(this.contentProvider.provideHeader(logoUrl))
+            .updateCSS(webview.asWebviewUri(cssUrl).toString())
+            .updateHeader(this.contentProvider.provideHeader(webview.asWebviewUri(logoUrl).toString()))
             .updateChangeLog(this.contentProvider.provideChangeLog())
             .updateSponsors(this.sponsorProvider?.provideSponsors())
             .updateSupportChannels(this.contentProvider.provideSupportChannels())
             .updateSocialMedias(this.socialMediaProvider?.provideSocialMedias())
             .build();
+
+        html = html
+            .replace(/#{cspSource}/g, webview.cspSource)
+            .replace(/#{root}/g, webview.asWebviewUri(this.context.extensionUri).toString());
+
+        return html;
     }
 }

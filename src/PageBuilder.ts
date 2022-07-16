@@ -3,21 +3,30 @@
 *  Licensed under the MIT License. See License.md in the project root for license information.
 *--------------------------------------------------------------------------------------------*/
 
-import * as fs from "fs";
+// import * as fs from "fs";
 import * as semver from "semver";
+import { Uri, Webview, workspace } from "vscode";
 import { ChangeLogItem, ChangeLogIssue, ChangeLogVersion, ChangeLogKind, Header, Sponsor, IssueKind, SupportChannel, SocialMedia } from "./ContentProvider";
+
+export async function readRAWFileUri(uri: Uri): Promise<string> {
+    const bytes = await workspace.fs.readFile(uri);
+    return new TextDecoder('utf-8').decode(bytes);
+}
 
 export class WhatsNewPageBuilder {
 
-    public static newBuilder(htmlFile: string): WhatsNewPageBuilder {
-        return new WhatsNewPageBuilder(htmlFile);
+    public static async newBuilder(webview: Webview, htmlFile: Uri): Promise<WhatsNewPageBuilder> {
+        const html = await readRAWFileUri(htmlFile);
+        return new WhatsNewPageBuilder(webview, html);
     }
 
     private htmlFile: string;
     private repositoryUrl!: string;
+    private webview: Webview;
 
-    constructor(htmlFile: string) {
-        this.htmlFile = fs.readFileSync(htmlFile).toString();
+    constructor(webview: Webview, htmlFile: string) {
+        this.webview = webview;
+        this.htmlFile = htmlFile;
     }
 
     public updateExtensionPublisher(publisher: string) {
