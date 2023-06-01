@@ -29,6 +29,10 @@ export class WhatsNewManager {
         return vscode.env.remoteName?.toLocaleLowerCase() === 'codespaces';
     }
 
+    private isRunningOnGitpod(): boolean {
+        return !!process.env.GITPOD_WORKSPACE_ID;
+    }
+
     public registerContentProvider(publisher: string, extensionName: string, contentProvider: ContentProvider): WhatsNewManager {
         this.publisher = publisher;
         this.extensionName = extensionName
@@ -93,7 +97,7 @@ export class WhatsNewManager {
         this.context.globalState.update(this.versionKey, currentVersion);
 
         // 
-        if (this.isRunningOnCodespaces()) {
+        if (this.isRunningOnCodespaces() || this.isRunningOnGitpod()) {
             return;
         }
 
