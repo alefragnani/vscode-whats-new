@@ -61,7 +61,7 @@ export class WhatsNewManager {
 
         const previousExtensionVersion = this.context.globalState.get<string>(this.versionKey);
 
-        await this.showPageIfVersionDiffers(this.extension.packageJSON.version, previousExtensionVersion);
+        await this.showPageIfCurrentVersionIsGreaterThanPrevisouVersion(this.extension.packageJSON.version, previousExtensionVersion);
     }
 
     public async showPage() {
@@ -89,6 +89,28 @@ export class WhatsNewManager {
 
             // only "patch" should be suppressed
             if (!differs || differs === "patch") {
+                return;
+            }
+        }
+
+        // "major", "minor"
+        this.context.globalState.update(this.versionKey, currentVersion);
+
+        // 
+        if (this.isRunningOnCodespaces() || this.isRunningOnGitpod()) {
+            return;
+        }
+
+        await this.showPage();
+    }
+
+    public async showPageIfCurrentVersionIsGreaterThanPrevisouVersion(currentVersion: string, previousVersion: string | undefined) {
+        if (previousVersion) {
+            const differs: semver.ReleaseType | null = semver.diff(currentVersion, previousVersion);
+            const isGreaterThanPreviousVersion = semver.gt(currentVersion, previousVersion);
+
+            // only "patch" should be suppressed
+            if (!differs || differs === "patch" || !isGreaterThanPreviousVersion) {
                 return;
             }
         }
