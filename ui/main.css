@@ -614,10 +614,3 @@ ul {
 
 .nowrap {
   flex-wrap: nowrap !important; }
-
-.vscode-dark .light {
-  display: none;
-}
-.vscode-light .dark {
-  display: none;
-}
