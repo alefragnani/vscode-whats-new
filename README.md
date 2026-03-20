@@ -114,6 +114,8 @@ const provider = new BookmarksContentProvider();
 const viewer = new WhatsNewManager(context)
     .registerContentProvider("alefragnani", "bookmarks", provider)
     .setUpdateKind("major") // optional, defaults to "minor"
+    .setUpdateDisplayKind("notification") // optional, defaults to "page"
+    .setUpdateNotificationDetailMessage("Click to see the latest improvements.") // optional, defaults to empty
     .registerSocialMediaProvider(new BookmarksSocialMediaProvider())
     .registerSponsorProvider(new BookmarksSponsorProvider());
 
@@ -131,6 +133,12 @@ It follows [SEMVER - Semantic Versioning](https://www.semver.org) to detect **Ma
 
 By default the **What's New** page is displayed for **Major** and **Minor** updates, while **Patch** updates are silent. If you want the page to be displayed only for **Major** updates, use `setUpdateKind("major")` while building `WhatsNewManager`.
 
+### Notification option
+
+By default qualifying updates open the **What's New** page right away. If you prefer to notify the user first and let them decide whether to open the page, use `setUpdateDisplayKind("notification")` while building `WhatsNewManager`. The notification includes a `See What's New` action that opens the webview on demand.
+
+If you want to append extra text after the version number in the notification message, use `setUpdateNotificationDetailMessage("Click to see the latest improvements.")`.
+
 ### Template Based
 
 I don't have to deal with HTML or CSS on my extensions anymore. I just have to _provide_ the relevant information and the HTML page is automatically generated/updated.
@@ -142,3 +150,4 @@ The idea came from the [GitLens extension](https://marketplace.visualstudio.com/
 # License
 
 [MIT](LICENSE.md) &copy; Alessandro Fragnani
+

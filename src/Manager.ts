@@ -10,6 +10,7 @@ import { ContentProvider, SocialMediaProvider, SponsorProvider } from "./Content
 import { WhatsNewPageBuilder } from "./PageBuilder";
 
 export type UpdateKind = "major" | "minor";
+export type UpdateDisplayKind = "page" | "notification";
 
 export class WhatsNewManager {
 
@@ -24,6 +25,8 @@ export class WhatsNewManager {
     private versionKey!: string;
     private shownKey!: string;
     private updateKind: UpdateKind = "minor";
+    private updateDisplayKind: UpdateDisplayKind = "page";
+    private updateNotificationDetailMessage = "";
 
     constructor(context: vscode.ExtensionContext) {
         this.context = context;
@@ -61,6 +64,16 @@ export class WhatsNewManager {
 
     public setUpdateKind(kind: UpdateKind): WhatsNewManager {
         this.updateKind = kind;
+        return this;
+    }
+
+    public setUpdateDisplayKind(kind: UpdateDisplayKind): WhatsNewManager {
+        this.updateDisplayKind = kind;
+        return this;
+    }
+
+    public setUpdateNotificationDetailMessage(message: string): WhatsNewManager {
+        this.updateNotificationDetailMessage = message;
         return this;
     }
 
@@ -111,7 +124,7 @@ export class WhatsNewManager {
             return;
         }
 
-        await this.showPageInFocusedWindowOnly(currentVersion);
+        await this.showUpdateInFocusedWindowOnly(currentVersion);
     }
 
     public async showPageIfCurrentVersionIsGreaterThanPrevisouVersion(currentVersion: string, previousVersion: string | undefined) {
@@ -133,24 +146,24 @@ export class WhatsNewManager {
             return;
         }
 
-        await this.showPageInFocusedWindowOnly(currentVersion);
+        await this.showUpdateInFocusedWindowOnly(currentVersion);
     }
 
-    private async showPageInFocusedWindowOnly(currentVersion: string): Promise<void> {
-        // Another window already showed the Webview for this version
+    private async showUpdateInFocusedWindowOnly(currentVersion: string): Promise<void> {
+        // Another window already showed the update message for this version
         if (this.context.globalState.get<string>(this.shownKey) === currentVersion) {
             return;
         }
 
         if (vscode.window.state.focused) {
-            await this.showPageAndMarkShown(currentVersion);
+            await this.showUpdateAndMarkShown(currentVersion);
         } else {
             // Defer until this window gains focus; guard against another window showing first
             const disposable = vscode.window.onDidChangeWindowState(state => {
                 if (state.focused) {
                     disposable.dispose();
                     if (this.context.globalState.get<string>(this.shownKey) !== currentVersion) {
-                        this.showPageAndMarkShown(currentVersion).catch(() => { /* ignore */ });
+                        void this.showUpdateAndMarkShown(currentVersion);
                     }
                 }
             });
@@ -158,9 +171,34 @@ export class WhatsNewManager {
         }
     }
 
-    private async showPageAndMarkShown(currentVersion: string): Promise<void> {
-        await this.showPage();
+    private async showUpdateAndMarkShown(currentVersion: string): Promise<void> {
+        await this.showUpdate();
         await this.context.globalState.update(this.shownKey, currentVersion);
+    }
+
+    private async showUpdate(): Promise<void> {
+        if (this.updateDisplayKind === "notification") {
+            await this.showUpdateNotification();
+            return;
+        }
+
+        await this.showPage();
+    }
+
+    private async showUpdateNotification(): Promise<void> {
+        const extensionDisplayName = this.extension.packageJSON.displayName ?? this.extensionName;
+        const showWhatsNewLabel = "See What's New";
+        const detailMessage = this.updateNotificationDetailMessage
+            ? ` ${this.updateNotificationDetailMessage}`
+            : "";
+        const selection = await vscode.window.showInformationMessage(
+            `${extensionDisplayName} was updated to version ${this.extension.packageJSON.version}.${detailMessage}`,
+            showWhatsNewLabel
+        );
+
+        if (selection === showWhatsNewLabel) {
+            await this.showPage();
+        }
     }
 
     private async getWebviewContentLocal(webview: Webview, htmlFile: Uri, cssUrl: Uri, logoUrl: Uri): Promise<string> {
@@ -188,3 +226,5 @@ export class WhatsNewManager {
         return html;
     }
 }
+
+
